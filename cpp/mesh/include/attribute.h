@@ -61,7 +61,8 @@ class SelectorBase {
   virtual std::valarray<bool> operator()(MeshBase *mesh) = 0;
 };
 
-template <typename T> class Mask : public std::mask_array<T> {
+template <typename T>
+class Mask : public std::mask_array<T> {
  public:
   using std::mask_array<T>::mask_array;
 
@@ -86,10 +87,12 @@ class Attribute : public AttributeBase {
  public:
   Attribute(SystemBase *mesh, std::string name,
             const AttributeExtent &extents = AttributeExtent())
-      : extents(extents), mesh(mesh),
+      : extents(extents),
+        mesh(mesh),
         iextents(extents.getDimension(),
                  std::numeric_limits<std::size_t>::quiet_NaN()),
-        idim(0), name(std::move(name)) {}
+        idim(0),
+        name(std::move(name)) {}
 
   Attribute &resize(const AttributeExtent &extent) override { return *this; }
 

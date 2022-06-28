@@ -2,9 +2,9 @@
 // Created by klaus on 06.01.19.
 //
 
-#include <sstream>
-
 #include "mesh.h"
+
+#include <sstream>
 
 namespace mesh {
 
@@ -30,8 +30,8 @@ Mesh<Dim, 0>::VerticesProxy::VerticesProxy(Mesh<Dim, 0> *mesh)
     : MeshElementsProxy(mesh->vertices_container), mesh(mesh) {}
 
 template <uint Dim>
-MeshElement *
-Mesh<Dim, 0>::VerticesProxy::create(const std::vector<ID> &vertices) {
+MeshElement *Mesh<Dim, 0>::VerticesProxy::create(
+    const std::vector<ID> &vertices) {
   if (vertices.size() > 1)
     throw std::logic_error("A Vertex consists of single points");
   ID id = vertices[0];
@@ -61,7 +61,8 @@ typename Mesh<Dim, 0>::VerticesProxy &Mesh<Dim, 0>::VerticesProxy::add(
   return *this;
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 0>::bodies() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 0>::bodies() {
   return *vertices_proxy;
 }
 
@@ -70,19 +71,22 @@ typename Mesh<Dim, 0>::VerticesProxy &Mesh<Dim, 0>::vertices() {
   return *vertices_proxy;
 }
 
-template <uint Dim> std::vector<double> &Mesh<Dim, 0>::getPointList() const {
+template <uint Dim>
+std::vector<double> &Mesh<Dim, 0>::getPointList() const {
   return *coordinates;
 }
 
 template <uint Dim>
 Mesh<Dim, 1>::Mesh()
-    : Mesh<Dim, 0>(), edges_container(this),
+    : Mesh<Dim, 0>(),
+      edges_container(this),
       edges_proxy(std::make_unique<EdgesProxy>(this)) {}
 
 template <uint Dim>
 template <uint TopDim>
 Mesh<Dim, 1>::Mesh(Mesh<Dim, TopDim> *mesh)
-    : Mesh<Dim, 0>(mesh), edges_container(mesh->edges_container),
+    : Mesh<Dim, 0>(mesh),
+      edges_container(mesh->edges_container),
       edges_proxy(std::make_unique<EdgesProxy>(this)) {
   static_assert(TopDim >= 1, "Dimension mismatch");
 }
@@ -98,27 +102,32 @@ MeshElement *Mesh<Dim, 1>::EdgesProxy::create(const std::vector<ID> &indices) {
   return mesh->edges_container.insert(indices[0], indices[1]);
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 1>::bodies() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 1>::bodies() {
   return *edges_proxy;
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 1>::facets() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 1>::facets() {
   return Mesh<Dim, 0>::bodies();
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 1>::edges() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 1>::edges() {
   return *edges_proxy;
 }
 
 template <uint Dim>
 Mesh<Dim, 2>::Mesh()
-    : Mesh<Dim, 1>(), faces_container(this),
+    : Mesh<Dim, 1>(),
+      faces_container(this),
       faces_proxy(std::make_unique<FacesProxy>(this)) {}
 
 template <uint Dim>
 template <uint TopDim>
 Mesh<Dim, 2>::Mesh(Mesh<Dim, TopDim> *mesh)
-    : Mesh<Dim, 1>(mesh), faces_container(mesh->faces_container),
+    : Mesh<Dim, 1>(mesh),
+      faces_container(mesh->faces_container),
       faces_proxy(std::make_unique<FacesProxy>(this)) {
   static_assert(TopDim >= 2, "Dimension mismatch");
 }
@@ -134,19 +143,23 @@ MeshElement *Mesh<Dim, 2>::FacesProxy::create(const std::vector<ID> &indices) {
   return mesh->faces_container.insert(indices[0], indices[1], indices[2]);
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 2>::bodies() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 2>::bodies() {
   return faces();
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 2>::facets() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 2>::facets() {
   return Mesh<Dim, 1>::edges();
 }
 
-template <uint Dim> MeshElementsProxy &Mesh<Dim, 2>::ridges() {
+template <uint Dim>
+MeshElementsProxy &Mesh<Dim, 2>::ridges() {
   return Mesh<Dim, 0>::vertices();
 }
 
-template <uint Dim> typename Mesh<Dim, 2>::FacesProxy &Mesh<Dim, 2>::faces() {
+template <uint Dim>
+typename Mesh<Dim, 2>::FacesProxy &Mesh<Dim, 2>::faces() {
   return *faces_proxy;
 }
 

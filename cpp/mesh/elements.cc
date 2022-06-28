@@ -3,6 +3,7 @@
 //
 
 #include "elements.h"
+
 #include "mesh.h"
 
 namespace mesh {
@@ -16,7 +17,8 @@ template <uint Dim, uint SimplexDim>
 SimplexBase<Dim, SimplexDim>::SimplexBase(
     MeshBase *mesh, ID id,
     const util::generate_tuple_type_t<ID, SimplexDim + 1> &vertices)
-    : mesh(mesh), id(id),
+    : mesh(mesh),
+      id(id),
       vertices(util::as_array<util::generate_tuple_type_t<ID, SimplexDim + 1>>(
           std::forward<util::generate_tuple_type_t<ID, SimplexDim + 1>>(
               const_cast<util::generate_tuple_type_t<ID, SimplexDim + 1> &>(
@@ -59,8 +61,7 @@ template <uint Dim, uint SimplexDim>
 Eigen::VectorXd SimplexBase<Dim, SimplexDim>::getPoint(size_t idx) const {
   const ID vid = (*this)[idx];
   const double *pntlst = nullptr;
-  if (vid >= 0)
-    pntlst = &mesh->getPointList()[0] + (*this)[idx] * Dim;
+  if (vid >= 0) pntlst = &mesh->getPointList()[0] + (*this)[idx] * Dim;
   /*for (size_t i = 0; i < Dim; ++i)
      cout << pntlst[i] << ", ";
   cout << endl;*/
@@ -82,16 +83,19 @@ Eigen::MatrixXd SimplexBase<Dim, SimplexDim>::getPoints() const {
   return res;
 }
 
-template <uint Dim> Eigen::VectorXd Simplex<Dim, 0>::center() const {
+template <uint Dim>
+Eigen::VectorXd Simplex<Dim, 0>::center() const {
   return Simplex<Dim, 0>::getPoint(0);
 }
 
-template <uint Dim> Eigen::VectorXd Simplex<Dim, 1>::center() const {
+template <uint Dim>
+Eigen::VectorXd Simplex<Dim, 1>::center() const {
   return Simplex<Dim, 1>::getPoint(0) +
          (Simplex<Dim, 1>::getPoint(1) - Simplex<Dim, 1>::getPoint(0)) * 0.5;
 }
 
-template <uint Dim> Eigen::VectorXd Simplex<Dim, 2>::center() const {
+template <uint Dim>
+Eigen::VectorXd Simplex<Dim, 2>::center() const {
   const auto e =
       Simplex<Dim, 2>::getPoint(0) +
       (Simplex<Dim, 2>::getPoint(1) - Simplex<Dim, 2>::getPoint(0)) * 0.5;
@@ -99,7 +103,8 @@ template <uint Dim> Eigen::VectorXd Simplex<Dim, 2>::center() const {
          (e - Simplex<Dim, 2>::getPoint(2)) * 2.0 / 3.0;
 }
 
-template <uint Dim> Eigen::VectorXd Simplex<Dim, 3>::center() const {
+template <uint Dim>
+Eigen::VectorXd Simplex<Dim, 3>::center() const {
   return Simplex<Dim, 3>::getPoint(0) +
          (Simplex<Dim, 3>::getPoint(1) - Simplex<Dim, 3>::getPoint(0)) * 0.5;
 }
